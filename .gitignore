@@ -1,0 +1,27 @@
+# Misc
+.DS_Store
+
+# Pem
+*.pem
+
+# Node dependencies
+node_modules
+
+# Build file
+build/
+
+# Logs
+logs
+*.log*
+
+# Local env files
+.env
+.env.*
+.env*.local
+!.env.example
+
+# Visual Studio Code related
+.classpath
+.project
+.settings/
+.vscode/*

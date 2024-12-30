@@ -1,0 +1,44 @@
+# なにをするワークフローか手短に記述
+#
+# ワークフローの目的や影響範囲、参考URLなどを数行で書く
+# 実装詳細ではなく、コードから読み取れない背景情報を中心にする
+
+name: Workflow template
+on:
+  # 動作確認しやすいように手動起動をサポート
+  workflow_dispatch:
+  # プルリクエストはファイルパスでフィルタリング
+  pull_request:
+    paths: [".github/workflows/**.yml", ".github/workflows/**.yaml"]
+
+# ワークフローレベルでパーミッションをすべて無効化
+permissions: {}
+
+# デフォルトシェルでパイプエラーを有効化
+defaults:
+  run:
+    shell: bash
+
+# ワークフローが複数起動したら自動キャンセル
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  example:
+    # もっとも安価なUbuntuランナーを利用
+    runs-on: ubuntu-latest
+    # 6時間も待たされないようにタイムアウトを設定（一旦 `5分` で設定）
+    timeout-minutes: 5
+    # ジョブレベルで必要最小限のパーミッションを定義
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Bashトレーシングオプションの有効化でログを詳細化
+      - name: Run actionlint
+        run: |
+          set -x
+          docker run --rm -v "$(pwd):$(pwd)" -w "$(pwd)" rhysd/actionlint:1.7.3

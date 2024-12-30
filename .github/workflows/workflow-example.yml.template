@@ -3,7 +3,7 @@
 # # ワークフローの目的や影響範囲、参考URLなどを数行で書く
 # # 実装詳細ではなく、コードから読み取れない背景情報を中心にする
 
-# name: Workflow example
+# name: Workflow Example
 # on:
 #   # 動作確認しやすいように手動起動をサポート
 #   workflow_dispatch:
@@ -41,4 +41,4 @@
 #       - name: Run actionlint
 #         run: |
 #           set -x
-#           docker run --rm -v "$(pwd):$(pwd)" -w "$(pwd)" rhysd/actionlint:1.7.3
+#           docker run --rm -v "$(pwd):$(pwd)" -w "$(pwd)" rhysd/actionlint:latest

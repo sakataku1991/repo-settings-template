@@ -3,7 +3,7 @@
 # # ワークフローの目的や影響範囲、参考URLなどを数行で書く
 # # 実装詳細ではなく、コードから読み取れない背景情報を中心にする
 
-# name: Workflow template
+# name: Workflow example
 # on:
 #   # 動作確認しやすいように手動起動をサポート
 #   workflow_dispatch:

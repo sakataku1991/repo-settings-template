@@ -3,6 +3,7 @@
 # REPO: https://github.com/rhysd/actionlint
 
 name: Lint GitHub Actions
+
 on:
   # 動作確認しやすいように手動起動をサポート
   workflow_dispatch:

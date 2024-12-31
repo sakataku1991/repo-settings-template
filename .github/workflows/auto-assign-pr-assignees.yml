@@ -1,0 +1,51 @@
+# プルリクエストが作成されたとき、プルリクエストの作成者をAssigneesとして自動的に設定・アサインする
+
+name: Auto Assign PR Assignees
+
+on:
+  # 動作確認しやすいように手動起動をサポート
+  workflow_dispatch:
+  # プルリクエストはファイルパスでフィルタリング
+  # このワークフローをトリガーするイベント
+  pull_request:
+    # opened:           PRが新たに作成されたとき
+    # ready_for_review: PRの状態がDraftからOpenに変更されたとき
+    # reopened:         一度CloseされたPRがOpenに変更されたとき
+    types: [opened, ready_for_review, reopened]
+
+# ワークフローレベルでパーミッションをすべて無効化
+permissions: {}
+
+# デフォルトシェルでパイプエラーを有効化
+defaults:
+  run:
+    shell: bash
+
+# ワークフローが複数起動したら自動キャンセル
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  assign-author:
+    # 以下の条件の両方に合致する場合にのみ、このジョブを実行する
+    # - PRの作成者が人間（＝Dependabotなどのbotではなく）のとき
+    # - PRのAssigneesがまだ設定されていないとき
+    if: endsWith(github.actor, '[bot]') == false && github.event.pull_request.assignee == null
+    # もっとも安価なUbuntuランナーを利用
+    runs-on: ubuntu-latest
+    # 6時間も待たされないようにタイムアウトを設定（一旦 `5分` で設定）
+    timeout-minutes: 5
+    # ジョブレベルで必要最小限のパーミッションを定義
+    permissions:
+      pull-requests: write
+      repository-projects: read
+    steps:
+      # Bashトレーシングオプションの有効化でログを詳細化
+      - name: Auto Assign
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -x
+          gh pr edit ${{ github.event.number }} --add-assignee ${{ github.actor }}

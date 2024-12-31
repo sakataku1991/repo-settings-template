@@ -37,5 +37,5 @@
 # ローカルリポジトリの自動最新化処理
 post-checkout:
   scripts:
-    "pull-on-main-or-develop":
+    "pull-on-default-branch":
       runner: bash

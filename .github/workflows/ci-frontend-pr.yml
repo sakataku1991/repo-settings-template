@@ -97,7 +97,7 @@ jobs:
       - name: Install node modules
         run: yarn install --frozen-lockfile
       - name: Run eslint
-        run: yarn lint
+        run: yarn run lint
 
   # TODO: CI で自動テストを実施する！
   # test:

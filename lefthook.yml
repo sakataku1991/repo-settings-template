@@ -39,10 +39,7 @@ post-checkout:
   scripts:
     pull-on-main-or-develop:
       run: |
-        # 現在いるブランチのブランチ名を取得
         branch=$(git rev-parse --abbrev-ref HEAD)
-
-        # `main` ブランチ もしくは `develop` ブランチに git switch した際に git pull を実行する
         if [ "$branch" = "main" ] || [ "$branch" = "develop" ]; then
             git pull origin $branch
         fi

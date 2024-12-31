@@ -7,8 +7,9 @@ name: Lint GitHub Actions
 on:
   # 動作確認しやすいように手動起動をサポート
   workflow_dispatch:
-  # プルリクエストはファイルパスでフィルタリング
+  # このワークフローをトリガーするイベント
   pull_request:
+    # 「ファイルパス」でフィルタリング
     paths: [".github/workflows/**.yml", ".github/workflows/**.yaml"]
 
 # ワークフローレベルでパーミッションをすべて無効化

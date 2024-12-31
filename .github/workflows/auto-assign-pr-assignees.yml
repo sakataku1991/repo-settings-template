@@ -1,13 +1,13 @@
-# プルリクエストが作成されたとき、プルリクエストの作成者をAssigneesとして自動的に設定・アサインする
+# プルリクエストが作成されたとき、プルリクエストの作成者をAssigneesとして自動的に設定・アサインするワークフロー
 
 name: Auto Assign PR Assignees
 
 on:
   # 動作確認しやすいように手動起動をサポート
   workflow_dispatch:
-  # プルリクエストはファイルパスでフィルタリング
   # このワークフローをトリガーするイベント
   pull_request:
+    # 「状態」でフィルタリング
     # opened:           PRが新たに作成されたとき
     # ready_for_review: PRの状態がDraftからOpenに変更されたとき
     # reopened:         一度CloseされたPRがOpenに変更されたとき
@@ -31,7 +31,11 @@ jobs:
     # 以下の条件の両方に合致する場合にのみ、このジョブを実行する
     # - PRの作成者が人間（＝Dependabotなどのbotではなく）のとき
     # - PRのAssigneesがまだ設定されていないとき
-    if: endsWith(github.actor, '[bot]') == false && github.event.pull_request.assignee == null
+    if: >-
+      ${{
+        github.actor != 'dependabot[bot]' &&
+        github.event.pull_request.assignee == null
+      }}
     # もっとも安価なUbuntuランナーを利用
     runs-on: ubuntu-latest
     # 6時間も待たされないようにタイムアウトを設定（一旦 `5分` で設定）
@@ -46,7 +50,7 @@ jobs:
         uses: actions/checkout@v4
 
       # Bashトレーシングオプションの有効化でログを詳細化
-      - name: Auto Assign
+      - name: Auto assign
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}

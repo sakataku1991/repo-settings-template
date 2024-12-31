@@ -1,0 +1,103 @@
+# フロントエンドの実装の CI のワークフロー
+# 以下の項目を CI の作業として実行する
+# - フォーマット（コード整形）
+# - リント（静的解析）
+# - テスト（単体テスト、結合テスト、E2Eテスト）
+
+name: CI for Frontend Pull Requests
+
+on:
+  # 動作確認しやすいように手動起動をサポート
+  workflow_dispatch:
+  # このワークフローをトリガーするイベント
+  pull_request:
+    # 「状態」でフィルタリング
+    # opened:           PRが新たに作成されたとき
+    # reopened:         一度CloseされたPRがOpenに変更されたとき
+    # synchronize:      PRにコミットが追加されたとき
+    types: [opened, reopened, synchronize]
+
+# ワークフローレベルでパーミッションをすべて無効化
+permissions: {}
+
+# デフォルトシェルでパイプエラーを有効化
+defaults:
+  run:
+    shell: bash
+
+# ワークフローが複数起動したら自動キャンセル
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  format:
+    # 以下の条件の両方に合致する場合にのみ、このジョブを実行する
+    # - PRの作成者が人間（＝Dependabotなどのbotではなく）のとき
+    # - PRが `Draft` 以外の状態のとき
+    if: >-
+      ${{
+        github.actor != 'dependabot[bot]' &&
+        github.event.pull_request.draft == false
+      }}
+    # もっとも安価なUbuntuランナーを利用
+    runs-on: ubuntu-latest
+    # 6時間も待たされないようにタイムアウトを設定（一旦 `10分` で設定）
+    timeout-minutes: 10
+    # ジョブレベルで必要最小限のパーミッションを定義
+    permissions:
+      contents: read
+    steps:
+      # このワークフローをトリガーしたリポジトリを「チェックアウト（clone）」し、ワークフローがリポジトリにアクセスできるようにする
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup node.js
+        uses: actions/setup-node@v4
+        # TODO: 使用するnodeのバージョンやパッケージ管理ツールに応じて設定する！
+        # with:
+        #   node-version: '20'
+        #   cache: yarn
+        #   cache-dependency-path: yarn.lock
+      # TODO: 適切なキャッシュの設定をする！
+      # - name: Restore cached node_modules
+      - name: Install node modules
+        run: yarn install --frozen-lockfile
+      - name: Run prettier
+        run: yarn prettier --check
+
+  lint:
+    # 以下の条件の両方に合致する場合にのみ、このジョブを実行する
+    # - PRの作成者が人間（＝Dependabotなどのbotではなく）のとき
+    # - PRが `Draft` 以外の状態のとき
+    if: >-
+      ${{
+        github.actor != 'dependabot[bot]' &&
+        github.event.pull_request.draft == false
+      }}
+    # もっとも安価なUbuntuランナーを利用
+    runs-on: ubuntu-latest
+    # 6時間も待たされないようにタイムアウトを設定（一旦 `10分` で設定）
+    timeout-minutes: 10
+    # ジョブレベルで必要最小限のパーミッションを定義
+    permissions:
+      contents: read
+    steps:
+      # このワークフローをトリガーしたリポジトリを「チェックアウト（clone）」し、ワークフローがリポジトリにアクセスできるようにする
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup node.js
+        uses: actions/setup-node@v4
+        # TODO: 使用するnodeのバージョンやパッケージ管理ツールに応じて設定する！
+        # with:
+        #   node-version: '20'
+        #   cache: yarn
+        #   cache-dependency-path: yarn.lock
+      # TODO: 適切なキャッシュの設定をする！
+      # - name: Restore cached node_modules
+      - name: Install node modules
+        run: yarn install --frozen-lockfile
+      - name: Run eslint
+        run: yarn lint
+
+  # TODO: CI で自動テストを実施する！
+  # test:

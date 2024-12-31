@@ -41,6 +41,9 @@ jobs:
       pull-requests: write
       repository-projects: read
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       # Bashトレーシングオプションの有効化でログを詳細化
       - name: Auto Assign
         env:

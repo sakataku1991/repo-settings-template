@@ -1,6 +1,10 @@
 {
   "name": "write-project-name-here",
   "private": true,
+  "volta": {
+    "node": "22.12.0",
+    "yarn": "4.5.3"
+  },
   "devDependencies": {
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",

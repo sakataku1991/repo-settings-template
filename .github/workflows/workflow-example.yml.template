@@ -35,6 +35,7 @@ jobs:
     permissions:
       contents: read
     steps:
+      # このワークフローをトリガーしたリポジトリを「チェックアウト（clone）」し、ワークフローがリポジトリにアクセスできるようにする
       - name: Checkout
         uses: actions/checkout@v4
 

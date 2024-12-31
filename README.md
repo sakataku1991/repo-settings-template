@@ -8,6 +8,8 @@
 ## ローカル開発環境の設定手順
 
 - [ ] ※ここに設定項目を箇条書きする！
-- [ ] Lefthookの初期設定
-- [ ] xxxxxx
-- [ ] 
+- [ ] Lefthook の初期設定
+    - ターミナルで以下のコマンドを実行し、Lefthook をインストールする
+```Shell
+brew install lefthook
+```

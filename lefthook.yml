@@ -38,4 +38,13 @@
 post-checkout:
   scripts:
     pull-on-main-or-develop:
-      run: git pull
+      run: |
+        echo "Executing git pull in $(pwd)"
+        git pull
+
+pre-checkout:
+  scripts:
+    pull-on-main-or-develop:
+      run: |
+        echo "Executing git pull in $(pwd)"
+        git pull
